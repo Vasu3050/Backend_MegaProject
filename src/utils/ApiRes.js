@@ -7,3 +7,5 @@ class ApiRes {
         this.success = statusCode < 400
     }
 }
+
+export { ApiRes }
