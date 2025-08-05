@@ -1,5 +1,6 @@
 import { Router } from "express";
-import {
+import 
+{
   registerUser,
   loginUser,
   logOutUser,
@@ -11,7 +12,7 @@ import {
   updateUserCoverImg,
   getUserChannelProfile,
   getWatchHistory,
-} from "../controllers/User.controler.js"
+} from "../controllers/User.controler.js";
 import { upload } from "../middlewares/multer.js";
 import { verifyJWT } from "../middlewares/auth.js";
 

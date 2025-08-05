@@ -215,15 +215,26 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
+
 const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
+  if (!oldPassword || !newPassword) {
+    throw new ApiError(400, "Both old and new passwords are required");
+  }
+
   const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
 
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
-
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Wrong password");
+  }
+
+  if (newPassword.length < 6) {
+    throw new ApiError(400, "New password must be at least 6 characters long");
   }
 
   user.password = newPassword;
@@ -231,8 +242,9 @@ const changePassword = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiRes(200, {}, "Password Changed successfully"));
+    .json(new ApiRes(200, {}, "Password changed successfully"));
 });
+
 
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
@@ -278,7 +290,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Error while uploading avatar file");
   }
 
-  const user = await findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
